@@ -1,0 +1,6 @@
+{
+  "name": "EID Reunion Profile Maker",
+  "description": "Create a framed profile picture for EID Reunion 2026. Upload a photo, drag to adjust within the frame, and download.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

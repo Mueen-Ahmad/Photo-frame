@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <defs>
+    <!-- Mask to punch a hole for the profile picture -->
+    <mask id="hole_mask">
+      <rect width="1080" height="1080" fill="white" />
+      <circle cx="540" cy="460" r="380" fill="black" />
+    </mask>
+
+    <!-- Emerald green gradient background -->
+    <linearGradient id="bg_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+
+    <!-- Golden gradient for accents and text -->
+    <linearGradient id="gold_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#064e3b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background with the mask applied to create the transparent hole -->
+  <rect width="1080" height="1080" fill="url(#bg_grad)" mask="url(#hole_mask)" />
+
+  <!-- A subtle background glow behind the text -->
+  <rect x="0" y="700" width="1080" height="380" fill="url(#glow)" pointer-events="none"/>
+
+  <!-- Inner and outer golden rings wrapping the profile hole -->
+  <circle cx="540" cy="460" r="380" fill="none" stroke="url(#gold_grad)" stroke-width="16" />
+  <circle cx="540" cy="460" r="396" fill="none" stroke="#064e3b" stroke-width="4" />
+  <circle cx="540" cy="460" r="368" fill="none" stroke="#047857" stroke-width="5" opacity="0.8" />
+
+  <!-- EID Reunion Typography -->
+  <text x="540" y="900" font-family="'Arial', sans-serif" font-size="85" font-weight="900" fill="url(#gold_grad)" text-anchor="middle" letter-spacing="4">EID REUNION</text>
+  <text x="540" y="980" font-family="'Arial', sans-serif" font-size="52" font-weight="bold" fill="#A7F3D0" text-anchor="middle" letter-spacing="12">2 0 2 6</text>
+
+  <!-- Elegant top corners trim -->
+  <path d="M 40 40 L 200 40 L 40 200 Z" fill="url(#gold_grad)" opacity="0.6"/>
+  <path d="M 1040 40 L 880 40 L 1040 200 Z" fill="url(#gold_grad)" opacity="0.6"/>
+  <path d="M 60 60 L 180 60 L 60 180 Z" fill="#064e3b" opacity="0.9"/>
+  <path d="M 1020 60 L 900 60 L 1020 180 Z" fill="#064e3b" opacity="0.9"/>
+</svg>
