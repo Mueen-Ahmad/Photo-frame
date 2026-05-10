@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { UploadCloud, Download, ZoomIn, ZoomOut, Image as ImageIcon, RotateCcw } from 'lucide-react';
 
-const FRAME_URL = '/frame.svg';
+const FRAME_URL = 'https://raw.githubusercontent.com/Mueen-Ahmad/Images-for-projects/main/smcea.png';
 
 export default function App() {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -13,6 +13,10 @@ export default function App() {
   const [zoomMultiplier, setZoomMultiplier] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  
+  // Text State
+  const [nameText, setNameText] = useState('');
+  const [batchText, setBatchText] = useState('');
   
   // Viewport/Element Refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -79,6 +83,9 @@ export default function App() {
     // Only drag with left mouse button / single touch point
     if (e.buttons !== 1 && e.button !== 0) return;
     
+    // Ensure we don't start dragging if clicking on the input fields
+    if ((e.target as HTMLElement).tagName.toLowerCase() === 'input') return;
+    
     setIsDragging(true);
     setDragStart({ x: e.clientX, y: e.clientY });
     e.currentTarget.setPointerCapture(e.pointerId);
@@ -87,8 +94,11 @@ export default function App() {
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDragging) return;
     
-    const dx = e.clientX - dragStart.x;
-    const dy = e.clientY - dragStart.y;
+    // Account for difference in input precision; slightly increase sensitivity on touch devices
+    const sensitivity = e.pointerType === 'touch' ? 1.5 : 1;
+    
+    const dx = (e.clientX - dragStart.x) * sensitivity;
+    const dy = (e.clientY - dragStart.y) * sensitivity;
     
     setPan(prev => ({ x: prev.x + dx, y: prev.y + dy }));
     setDragStart({ x: e.clientX, y: e.clientY });
@@ -112,18 +122,17 @@ export default function App() {
     if (!ctx) return;
 
     try {
-      // Load both images
-      const frameImg = new Image();
-      frameImg.crossOrigin = "anonymous";
-      frameImg.src = FRAME_URL;
-      
-      const userImg = new Image();
-      userImg.crossOrigin = "anonymous";
-      userImg.src = imageSrc;
-      
-      await Promise.all([
-        new Promise(resolve => { frameImg.onload = resolve; }),
-        new Promise(resolve => { userImg.onload = resolve; })
+      const loadImg = (imgUrl: string, isCors: boolean) => new Promise<HTMLImageElement>((resolve, reject) => {
+        const img = new Image();
+        if (isCors) img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error(`Failed to load image. (If it's the frame, it might be a CORS issue)`));
+        img.src = imgUrl;
+      });
+
+      const [frameImg, userImg] = await Promise.all([
+        loadImg(FRAME_URL, true),
+        loadImg(imageSrc, false)
       ]);
 
       // Calculate conversion scale. The user panned and scaled in the container's coordinate system.
@@ -147,6 +156,26 @@ export default function App() {
       // Now draw the frame overlay ON TOP
       ctx.drawImage(frameImg, 0, 0, CANVAS_EXPORT_SIZE, CANVAS_EXPORT_SIZE);
 
+      // Draw the Text 
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      
+      const textStartX = CANVAS_EXPORT_SIZE * 0.46;
+      
+      // Name
+      if (nameText.trim() !== '') {
+        ctx.font = 'bold 54px sans-serif'; 
+        ctx.fillStyle = '#8a2be2'; // Vibrant Purple
+        ctx.fillText(nameText, textStartX, CANVAS_EXPORT_SIZE * 0.795); // Y positioned at ~80%
+      }
+      
+      // Batch
+      if (batchText.trim() !== '') {
+        ctx.font = 'bold 42px sans-serif'; 
+        ctx.fillStyle = '#111827'; // Near black
+        ctx.fillText(`জে.এস.সি ব্যাচ - ${batchText}`, textStartX, CANVAS_EXPORT_SIZE * 0.85); // Y positioned at ~86%
+      }
+
       // Trigger Download
       const dataUrl = canvas.toDataURL('image/png', 1.0);
       const link = document.createElement('a');
@@ -164,10 +193,11 @@ export default function App() {
       {/* Header */}
       <header className="bg-emerald-900 border-b border-emerald-800 text-white py-6 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight mb-2 text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 via-amber-200 to-amber-500">
-            EID REUNION 2026
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight mb-2 text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 via-amber-200 to-amber-500 leading-tight">
+            <span className="block mb-1">ঈদ পুনর্মিলনী ২০২৬</span>
+            <span className="block text-xl sm:text-2xl">শ্যামপুর মনি ক্যাডেট ইংলিশ একাডেমি</span>
           </h1>
-          <p className="text-emerald-100 font-medium">Create your official profile picture!</p>
+          
         </div>
       </header>
 
@@ -180,6 +210,7 @@ export default function App() {
           {/* Canvas Interactive Container */}
           <div 
             className="w-full relative mx-auto mb-6 bg-gray-100 rounded-2xl overflow-hidden shadow-inner border border-gray-200/60 aspect-square touch-none group"
+            style={{ containerType: 'inline-size' }}
           >
             {!imageSrc ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 transition-colors pointer-events-none">
@@ -240,6 +271,38 @@ export default function App() {
                 draggable={false}
                 className={`absolute inset-0 w-full h-full object-cover pointer-events-none ${!imageSrc && 'opacity-60 grayscale'}`} 
               />
+              
+              {/* Text Input Overlays */}
+              {imageSrc && (
+                <div 
+                  className="absolute pointer-events-auto flex flex-col justify-center gap-[1cqi]"
+                  style={{
+                    left: '42%',
+                    right: '6%',
+                    top: '74%',
+                    bottom: '10%'
+                  }}
+                >
+                  <input
+                    type="text"
+                    placeholder="নাম লিখুন"
+                    value={nameText}
+                    onChange={(e) => setNameText(e.target.value)}
+                    className="w-full bg-transparent border-2 border-transparent text-left font-bold focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 focus:bg-white/90 rounded-lg px-2 py-0.5 -mx-2 pointer-events-auto shadow-none transition-all"
+                    style={{ color: '#8a2be2', fontSize: 'clamp(14px, 5cqi, 32px)' }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                  />
+                  <input
+                    type="text"
+                    placeholder="জে.এস.সি ব্যাচ লিখুন"
+                    value={batchText}
+                    onChange={(e) => setBatchText(e.target.value)}
+                    className="w-full bg-transparent border-2 border-transparent text-left font-bold focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 focus:bg-white/90 rounded-lg px-2 py-0.5 -mx-2 pointer-events-auto shadow-none transition-all"
+                    style={{ color: '#111827', fontSize: 'clamp(12px, 3.8cqi, 24px)' }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                  />
+                </div>
+              )}
             </div>
             
             {imageSrc && (
