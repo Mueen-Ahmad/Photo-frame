@@ -388,13 +388,13 @@ export default function App() {
           </p>
           
           {visitorCount !== null && (
-            <div className="inline-flex items-center gap-2.5 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-emerald-200/50 text-emerald-800 transition-all hover:bg-white/80">
-              <span className="relative flex h-2.5 w-2.5">
+            <div className="fixed bottom-2 right-2 flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity bg-white/70 backdrop-blur-sm px-2.5 py-1.5 rounded-lg border border-emerald-100 shadow-sm z-50">
+              <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              <span className="text-[13px] font-semibold tracking-wide uppercase">
-                Profile Views: <span className="text-emerald-600 font-bold">{visitorCount.toLocaleString()}</span>
+              <span className="text-[10px] font-bold tracking-wide text-emerald-800 uppercase">
+                Visitors: <span className="text-emerald-600">{visitorCount.toLocaleString()}</span>
               </span>
             </div>
           )}
