@@ -336,7 +336,7 @@ export default function App() {
                   <ZoomOut className="w-4 h-4 text-emerald-600/60 shrink-0" />
                   <input 
                     type="range" 
-                    min="1" 
+                    min="0.2" 
                     max="4" 
                     step="0.05"
                     value={zoomMultiplier}
