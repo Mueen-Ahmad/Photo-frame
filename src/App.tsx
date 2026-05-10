@@ -30,16 +30,11 @@ export default function App() {
 
   useEffect(() => {
     // Fetch visitor count on page load
-    fetch('https://api.countapi.xyz/hit/moni-cadet-2026/visits')
+    fetch('https://api.counterapi.dev/v1/monicadet2026/visits/up')
       .then(res => res.json())
-      .then(data => setVisitorCount(data.value))
+      .then(data => setVisitorCount(data.count))
       .catch((err) => {
-        console.error('CountAPI failed:', err);
-        // Fallback since countapi.xyz is frequently offline
-        fetch('https://api.counterapi.dev/v1/monicadet2026/visits/up')
-          .then(res => res.json())
-          .then(data => setVisitorCount(data.count))
-          .catch(console.error);
+        console.error('CounterAPI failed:', err);
       });
   }, []);
 
