@@ -18,12 +18,30 @@ export default function App() {
   const [nameText, setNameText] = useState('');
   const [batchText, setBatchText] = useState('');
   
+  // Visitor Counter State
+  const [visitorCount, setVisitorCount] = useState<number | null>(null);
+
   // Viewport/Element Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Constants
   const CANVAS_EXPORT_SIZE = 1080;
+
+  useEffect(() => {
+    // Fetch visitor count on page load
+    fetch('https://api.countapi.xyz/hit/moni-cadet-2026/visits')
+      .then(res => res.json())
+      .then(data => setVisitorCount(data.value))
+      .catch((err) => {
+        console.error('CountAPI failed:', err);
+        // Fallback since countapi.xyz is frequently offline
+        fetch('https://api.counterapi.dev/v1/monicadet2026/visits/up')
+          .then(res => res.json())
+          .then(data => setVisitorCount(data.count))
+          .catch(console.error);
+      });
+  }, []);
 
   const handleZoomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newZoom = parseFloat(e.target.value);
@@ -364,9 +382,23 @@ export default function App() {
         </div>
         
         {/* Footer info */}
-        <p className="mt-8 text-sm text-emerald-800/60 font-medium text-center">
-          All processing happens in your browser. No photos are uploaded to any server.
-        </p>
+        <footer className="mt-8 text-center space-y-3 pb-8">
+          <p className="text-sm text-emerald-800/60 font-medium">
+            All processing happens in your browser. No photos are uploaded to any server.
+          </p>
+          
+          {visitorCount !== null && (
+            <div className="inline-flex items-center gap-2.5 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-emerald-200/50 text-emerald-800 transition-all hover:bg-white/80">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
+              <span className="text-[13px] font-semibold tracking-wide uppercase">
+                Profile Views: <span className="text-emerald-600 font-bold">{visitorCount.toLocaleString()}</span>
+              </span>
+            </div>
+          )}
+        </footer>
       </main>
     </div>
   );
