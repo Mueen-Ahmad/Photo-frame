@@ -330,68 +330,72 @@ export default function App() {
             </div>
             
             {imageSrc && (
-               <div className="absolute top-3 right-3 z-20 pointer-events-auto">
+               <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-40 pointer-events-auto">
                  <button 
                    onClick={() => setImageSrc(null)}
-                   className="bg-black/40 hover:bg-black/60 text-white p-2 rounded-full backdrop-blur-md transition"
+                   className="bg-black/40 hover:bg-black/60 text-white p-1.5 sm:p-2 rounded-full backdrop-blur-md transition shadow-md border border-white/20"
                    title="Start over"
+                   onPointerDown={(e) => e.stopPropagation()}
                  >
-                   <RotateCcw className="w-4 h-4" />
+                   <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
                  </button>
                </div>
             )}
             
             {/* Left Vertical Slider: Brightness */}
             {imageSrc && (
-              <div className="absolute left-3 inset-y-0 pt-14 pb-4 flex flex-col items-center justify-center pointer-events-none z-30">
+              <div className="absolute left-2 sm:left-3 top-[56px] bottom-[26%] flex flex-col items-center justify-center pointer-events-none z-30">
                 <div 
-                  className="pointer-events-auto flex flex-col items-center gap-3 bg-black/40 backdrop-blur-md p-2 rounded-full shadow-lg border border-white/20"
+                  className="pointer-events-auto flex flex-col items-center gap-1.5 sm:gap-2 bg-black/40 backdrop-blur-md p-1.5 sm:p-2 rounded-full shadow-lg border border-white/20 touch-none"
                   onPointerDown={(e) => e.stopPropagation()}
+                  onTouchStart={(e) => e.stopPropagation()}
                 >
-                  <Sun className="w-5 h-5 text-white/90" />
-                  <div className="relative w-4 h-[120px]">
-                    <input 
-                      type="range" min="50" max="150" value={brightness} onChange={e => setBrightness(Number(e.target.value))}
-                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-white -rotate-90 hover:bg-white/40 transition-colors"
-                      title="Brightness"
-                    />
-                  </div>
+                  <Sun className="w-4 h-4 sm:w-5 sm:h-5 text-white/90 shrink-0" />
+                  <input 
+                    type="range" min="50" max="150" value={brightness} onChange={e => setBrightness(Number(e.target.value))}
+                    className="w-1 m-0 p-0 sm:w-1.5 h-[80px] sm:h-[130px] rounded-lg cursor-pointer accent-white touch-none"
+                    style={{ WebkitAppearance: 'slider-vertical' }}
+                    {...{ orient: 'vertical' }}
+                    title="Brightness"
+                  />
                 </div>
               </div>
             )}
 
             {/* Right Vertical Sliders: Contrast & Saturation */}
             {imageSrc && (
-              <div className="absolute right-3 inset-y-0 pt-14 pb-4 flex flex-col justify-center gap-3 pointer-events-none z-30">
+              <div className="absolute right-2 sm:right-3 top-[56px] bottom-[26%] flex flex-col justify-center gap-2 sm:gap-3 pointer-events-none z-30">
                 
                 {/* Contrast */}
                 <div 
-                  className="pointer-events-auto flex flex-col items-center gap-2 bg-black/40 backdrop-blur-md p-2 rounded-full shadow-lg border border-white/20"
+                  className="pointer-events-auto flex flex-col items-center gap-1 sm:gap-2 bg-black/40 backdrop-blur-md p-1.5 sm:p-2 rounded-full shadow-lg border border-white/20 touch-none"
                   onPointerDown={(e) => e.stopPropagation()}
+                  onTouchStart={(e) => e.stopPropagation()}
                 >
-                  <Contrast className="w-4 h-4 text-white/90" />
-                  <div className="relative w-4 h-[90px] sm:h-[120px]">
-                    <input 
-                      type="range" min="50" max="150" value={contrast} onChange={e => setContrast(Number(e.target.value))}
-                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90px] sm:w-[120px] h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-white -rotate-90 hover:bg-white/40 transition-colors"
-                      title="Contrast"
-                    />
-                  </div>
+                  <Contrast className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/90 shrink-0" />
+                  <input 
+                    type="range" min="50" max="150" value={contrast} onChange={e => setContrast(Number(e.target.value))}
+                    className="w-1 m-0 p-0 sm:w-1.5 h-[65px] sm:h-[100px] rounded-lg cursor-pointer accent-white touch-none"
+                    style={{ WebkitAppearance: 'slider-vertical' }}
+                    {...{ orient: 'vertical' }}
+                    title="Contrast"
+                  />
                 </div>
 
                 {/* Saturation */}
                 <div 
-                  className="pointer-events-auto flex flex-col items-center gap-2 bg-black/40 backdrop-blur-md p-2 rounded-full shadow-lg border border-white/20"
+                  className="pointer-events-auto flex flex-col items-center gap-1 sm:gap-2 bg-black/40 backdrop-blur-md p-1.5 sm:p-2 rounded-full shadow-lg border border-white/20 touch-none"
                   onPointerDown={(e) => e.stopPropagation()}
+                  onTouchStart={(e) => e.stopPropagation()}
                 >
-                  <Droplets className="w-4 h-4 text-white/90" />
-                  <div className="relative w-4 h-[90px] sm:h-[120px]">
-                    <input 
-                      type="range" min="0" max="200" value={saturation} onChange={e => setSaturation(Number(e.target.value))}
-                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90px] sm:w-[120px] h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-white -rotate-90 hover:bg-white/40 transition-colors"
-                      title="Saturation"
-                    />
-                  </div>
+                  <Droplets className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/90 shrink-0" />
+                  <input 
+                    type="range" min="0" max="200" value={saturation} onChange={e => setSaturation(Number(e.target.value))}
+                    className="w-1 m-0 p-0 sm:w-1.5 h-[65px] sm:h-[100px] rounded-lg cursor-pointer accent-white touch-none"
+                    style={{ WebkitAppearance: 'slider-vertical' }}
+                    {...{ orient: 'vertical' }}
+                    title="Saturation"
+                  />
                 </div>
 
               </div>
