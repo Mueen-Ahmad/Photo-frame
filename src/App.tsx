@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, Download, ZoomIn, ZoomOut, Image as ImageIcon, RotateCcw } from 'lucide-react';
+import { UploadCloud, Download, ZoomIn, ZoomOut, Image as ImageIcon, RotateCcw, Sun, Contrast, Droplets } from 'lucide-react';
 
 const FRAME_URL = 'https://raw.githubusercontent.com/Mueen-Ahmad/Images-for-projects/main/smcea.png';
 
@@ -17,6 +17,11 @@ export default function App() {
   // Text State
   const [nameText, setNameText] = useState('');
   const [batchText, setBatchText] = useState('');
+  
+  // Image Adjustments
+  const [brightness, setBrightness] = useState(100);
+  const [contrast, setContrast] = useState(100);
+  const [saturation, setSaturation] = useState(100);
   
   // Visitor Counter State
   const [visitorCount, setVisitorCount] = useState<number | null>(null);
@@ -161,9 +166,14 @@ export default function App() {
       // Scale to match the user's interactive scale (scaled for export)
       ctx.scale(scale * mappingRatio, scale * mappingRatio);
       
+      // Apply filters
+      ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;
+      
       // Draw image
       ctx.drawImage(userImg, 0, 0);
       
+      // Reset filter before drawing the frame overlay
+      ctx.filter = 'none';
       ctx.restore();
 
       // Now draw the frame overlay ON TOP
@@ -272,7 +282,8 @@ export default function App() {
                   draggable={false}
                   style={{
                     transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale})`,
-                    willChange: 'transform'
+                    willChange: 'transform',
+                    filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
                   }}
                 />
               )}
@@ -328,6 +339,62 @@ export default function App() {
                    <RotateCcw className="w-4 h-4" />
                  </button>
                </div>
+            )}
+            
+            {/* Left Vertical Slider: Brightness */}
+            {imageSrc && (
+              <div className="absolute left-3 inset-y-0 pt-14 pb-4 flex flex-col items-center justify-center pointer-events-none z-30">
+                <div 
+                  className="pointer-events-auto flex flex-col items-center gap-3 bg-black/40 backdrop-blur-md p-2 rounded-full shadow-lg border border-white/20"
+                  onPointerDown={(e) => e.stopPropagation()}
+                >
+                  <Sun className="w-5 h-5 text-white/90" />
+                  <div className="relative w-4 h-[120px]">
+                    <input 
+                      type="range" min="50" max="150" value={brightness} onChange={e => setBrightness(Number(e.target.value))}
+                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-white -rotate-90 hover:bg-white/40 transition-colors"
+                      title="Brightness"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Right Vertical Sliders: Contrast & Saturation */}
+            {imageSrc && (
+              <div className="absolute right-3 inset-y-0 pt-14 pb-4 flex flex-col justify-center gap-3 pointer-events-none z-30">
+                
+                {/* Contrast */}
+                <div 
+                  className="pointer-events-auto flex flex-col items-center gap-2 bg-black/40 backdrop-blur-md p-2 rounded-full shadow-lg border border-white/20"
+                  onPointerDown={(e) => e.stopPropagation()}
+                >
+                  <Contrast className="w-4 h-4 text-white/90" />
+                  <div className="relative w-4 h-[90px] sm:h-[120px]">
+                    <input 
+                      type="range" min="50" max="150" value={contrast} onChange={e => setContrast(Number(e.target.value))}
+                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90px] sm:w-[120px] h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-white -rotate-90 hover:bg-white/40 transition-colors"
+                      title="Contrast"
+                    />
+                  </div>
+                </div>
+
+                {/* Saturation */}
+                <div 
+                  className="pointer-events-auto flex flex-col items-center gap-2 bg-black/40 backdrop-blur-md p-2 rounded-full shadow-lg border border-white/20"
+                  onPointerDown={(e) => e.stopPropagation()}
+                >
+                  <Droplets className="w-4 h-4 text-white/90" />
+                  <div className="relative w-4 h-[90px] sm:h-[120px]">
+                    <input 
+                      type="range" min="0" max="200" value={saturation} onChange={e => setSaturation(Number(e.target.value))}
+                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90px] sm:w-[120px] h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-white -rotate-90 hover:bg-white/40 transition-colors"
+                      title="Saturation"
+                    />
+                  </div>
+                </div>
+
+              </div>
             )}
           </div>
 
